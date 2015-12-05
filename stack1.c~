@@ -1,0 +1,44 @@
+#include<stdio.h>
+
+#define STACKSIZE 100
+
+struct stack {
+  int top;
+  int item[STACKSIZE];
+};
+
+typedef struct stack STACK;
+
+int is_empty(STACK *ps)
+{
+  return (ps->top == -1);
+}
+
+int pop(STACK *ps)
+{
+  if(is_empty(ps))
+    {
+      printf("stack underflow\n");
+      exit(1);
+    }
+  return (ps->item[ps->top--]);
+}
+
+void push(STACK *ps,int x)
+{
+  if(ps->top == STACKSIZE -1){
+    printf("stack overflow\n");
+    exit(1);
+  }
+  ps->item[++(ps->top)]=x;
+  return;
+}
+
+int peek(STACK *ps)
+{
+  if(is_empty(ps)){
+    printf("stack underflow\n");
+    exit(1);
+  }
+  return ps->item[ps->top];
+}

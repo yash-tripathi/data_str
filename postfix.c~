@@ -1,0 +1,87 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include "structure.h"
+
+void main(int argc, char *argv[])
+{
+	char expr[MAXEXPR];
+	if(argc==1 || argc >2){
+		printf("see usage :\n
+			post <expression>\n");
+		exit(1);
+	}
+
+	printf("%s = %f\n",argv[1],eval(argv[1]));
+}
+
+int is_digit(char symbol)
+{
+	return (symbol >= '0' && symbol <= '9');
+}
+
+int is_delimiter(char symbol)
+{
+	return (symbol == ' ');
+}
+
+int is_operator(char symbol)
+{
+	return (symbol == '+' || 
+		symbol == '-' ||
+		symbol == '/' ||
+		symbol == '*' ||
+		symbol == '^' );
+}
+
+float operation(float opr1, float opr2, char symbol)
+{
+	switch(symbol)
+	{
+		case '+' : return opr1 + opr2;
+		case '-' : return opr1 - opr2;
+		case '*' : return opr1 * opr2;
+		case '/' : return opr1 / opr2;
+		case '^' : return pow(opr1,opr2);
+		default  : printf("illegal operator\n");
+			   exit(1);
+	}
+}
+
+void pour(STACK *st_a,STACK *st_b)
+{
+	while(st_b->top != -1)
+		push(st_a,pop(st_b));
+}
+
+float process_data(STACK *pst1)
+{
+	STRUCT *pst2;
+	pour(pst2,pst1);
+	while(pst2->top>0){
+		d = pop(pst2);
+		pst2->item[pst2->top] = 10*d + pst2->item[pst2->top];
+	}
+	return pst2->item[pst2->top];
+}
+
+
+float eval(char *expr)
+{
+	STACK solution,temp;
+	float value,operand1,operand2;
+	while(*expr)
+	{
+		if(is_digit(*expr))
+			push(&temp, (float) (*expr));
+		else if(is_delimiter(*expr))
+			push(&solution,process_data(&temp));
+		else {  
+			operand2 = pop(&solution);
+			operand1 = pop(&solution);
+			value = operation(operand1,operand2,expr);
+			push(&solution,value);
+		}
+		expr++;
+	}
+	return pop(&solution);
+}				
